@@ -1,0 +1,38 @@
+.event_mark{
+    padding: 10px 20px;
+    height: 100%;
+    margin-left: 2px;
+    /* direction:'rtl'; */
+    border-left: 1px solid #ccc;
+}
+
+.ant-form-item{
+    margin-bottom: 0;
+}
+
+.editBtn{
+    display: inline-block;
+    float: right;
+    cursor: pointer;
+}
+
+.editBtn:hover{
+    color: #1890ff;
+}
+
+.hidden{
+    display: none !important;
+}
+
+.confrim_notice_info{
+    width: 56px;
+    float: right;
+    color: #fff;
+    background-color: #2F6AEA;
+    border-color: #2F6AEA;
+}
+
+.item_line{
+    line-height: 29.999px;
+    margin-bottom: 0;
+}
