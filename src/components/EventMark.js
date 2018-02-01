@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Button, Icon, Tooltip, Input, message } from 'antd';
+import {
+    Form, Button, Icon, Tooltip,
+    Divider, Input, message,
+} from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
+import SchemaList from './SchemaList';
 import styles from './eventmark.css';
 
 const FormItem = Form.Item;
@@ -18,7 +22,8 @@ export default class Notice extends Component {
     componentDidMount() {
         const ps = new PerfectScrollbar('#event_mark', {
             wheelSpeed: 0.5,
-            maxScrollbarLength: 150,
+            wheelPropagation: false,
+            maxScrollbarLength: 100,
         });
         ps.update();
     }
@@ -83,7 +88,7 @@ export default class Notice extends Component {
                             overlayClassName="numeric-input"
                         >
                             {getFieldDecorator('userName', {
-                                rules: [{ required: true, message: 'Please input your username!' }],
+                                rules: [],
                             })(
                                 <Input
                                     name="notice_title"
@@ -91,7 +96,7 @@ export default class Notice extends Component {
                                     style={{ width: 200 }}
                                 />,
                             )}
-                        </Tooltip>,
+                        </Tooltip>
 
                         <div
                             onClick={this.editClickHander}
@@ -109,13 +114,16 @@ export default class Notice extends Component {
                         <span className={this.state.editing ? 'ant-form-text hidden' : 'ant-form-text'}>
                             {this.state.notice_time}
                         </span>
-                        <Input
-                            name="notice_time"
-                            type={this.state.editing ? 'text' : 'hidden'}
-                            style={{ width: 200 }}
-                        // value={this.state.notice_time}
-                        // readOnly
-                        />
+                        {getFieldDecorator('userName', {
+                            rules: [],
+                        })(
+                            <Input
+                                name="notice_time"
+                                type={this.state.editing ? 'text' : 'hidden'}
+                                style={{ width: 200 }}
+                            />,
+                        )}
+
                         <Button
                             onClick={this.saveNoticeInfo} size={size}
                             type="primary"
@@ -125,7 +133,9 @@ export default class Notice extends Component {
                         </Button>
                     </FormItem>
                 </Form>
-                <hr />
+                <Divider style={{ margin: '10px 0' }} />
+                <SchemaList />
+                {/* <SchemaList /> */}
 
             </div>
         );

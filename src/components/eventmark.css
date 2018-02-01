@@ -2,6 +2,7 @@
     padding: 10px 20px;
     height: 100%;
     margin-left: 2px;
+    position: relative;
     /* direction:'rtl'; */
     border-left: 1px solid #ccc;
 }
