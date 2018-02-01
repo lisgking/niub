@@ -1,11 +1,39 @@
 import React, { Component } from 'react';
 import {
-    Form, Button, Icon, Tooltip,
-    Divider, Input, message,
+    Form, Button, Icon, Tooltip, Affix,
+    // Layout, Header, Content, Footer,
+    Row, Col,
+    Divider, Input, message, Collapse,
 } from 'antd';
 import PerfectScrollbar from 'perfect-scrollbar';
+import moment from 'moment';
+import 'moment-precise-range-plugin';
 import SchemaList from './SchemaList';
 import styles from './eventmark.css';
+
+const Panel = Collapse.Panel;
+
+const customPanelStyle = {
+    background: '#f7f7f7',
+    boxShadow: '0 0 4px 0',
+    marginBottom: 20,
+    border: 0,
+    overflow: 'hidden',
+};
+
+const time_zh = {
+    years: '年',
+    months: '月',
+    days: '日',
+    hours: '时',
+    minutes: '分',
+    seconds: '秒',
+}
+
+const confirmCheckBtn = {
+    margin: '10px 0',
+    height: '44px',
+};
 
 const FormItem = Form.Item;
 @Form.create()
@@ -17,6 +45,7 @@ export default class Notice extends Component {
         editing: false,
         confrimBtn: '确认',
         showEdit: true,
+        endtime: '0时0分0秒',
     }
 
     componentDidMount() {
@@ -26,6 +55,28 @@ export default class Notice extends Component {
             maxScrollbarLength: 100,
         });
         ps.update();
+
+        this.countDown();
+    }
+
+    countDown() {
+        const interval = 1000;
+        const m2 = moment().add(1, 'hour');
+        this.timer = setInterval(() => {
+            let str = '';
+            const m1 = moment();
+            const diff = moment.preciseDiff(m1, m2, true); // '1 month 2 days 3 hours 4 minutes 5 seconds'
+            let flag = false;
+            for (let key in time_zh) {
+                if (diff[key] > 0 || flag) {
+                    str += (diff[key] >= 10 ? diff[key] : '0' + diff[key]) + time_zh[key];
+                    flag = true;
+                }
+            }
+            this.setState({
+                endtime: str,
+            });
+        }, interval);
     }
 
     editClickHander = () => {
@@ -51,9 +102,9 @@ export default class Notice extends Component {
         });
         message.success('公告信息保存成功');
     }
-    // componentWillUnmount() {
-    //     clearInterval(this.timer);
-    // }
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -71,7 +122,7 @@ export default class Notice extends Component {
             wrapperCol: { span: 20 },
         };
         return (
-            <div id="event_mark" className={styles.event_mark}>
+            <div className={styles.event_mark} ref={(node) => { this.container = node; }}>
                 <Form className={styles.notice_form} onSubmit={this.handleSubmit}>
                     <FormItem
                         className={styles.item_line}
@@ -87,7 +138,7 @@ export default class Notice extends Component {
                             placement="topLeft"
                             overlayClassName="numeric-input"
                         >
-                            {getFieldDecorator('userName', {
+                            {getFieldDecorator('notice_title', {
                                 rules: [],
                             })(
                                 <Input
@@ -114,7 +165,7 @@ export default class Notice extends Component {
                         <span className={this.state.editing ? 'ant-form-text hidden' : 'ant-form-text'}>
                             {this.state.notice_time}
                         </span>
-                        {getFieldDecorator('userName', {
+                        {getFieldDecorator('notice_time', {
                             rules: [],
                         })(
                             <Input
@@ -132,11 +183,38 @@ export default class Notice extends Component {
                             {this.state.confrimBtn}
                         </Button>
                     </FormItem>
+                    <Divider style={{ margin: '10px 0' }} />
                 </Form>
-                <Divider style={{ margin: '10px 0' }} />
-                <SchemaList />
-                {/* <SchemaList /> */}
 
+                <div id="event_mark" className={styles.schema_content}>
+
+                    <Collapse bordered={false} defaultActiveKey={['1']}>
+                        <Panel header="This is panel header 1" key="1" style={customPanelStyle}>
+                            <SchemaList />
+                        </Panel>
+                        <Panel header="This is panel header 2" key="2" style={customPanelStyle}>
+                            <SchemaList />
+                        </Panel>
+                        <Panel header="This is panel header 3" key="3" style={customPanelStyle}>
+                            <SchemaList />
+                        </Panel>
+                    </Collapse>
+                </div>
+                <Affix
+                    offsetBottom={10}
+                    className={styles.confrim_check}
+                    target={() => this.container}
+                >
+                    <Row>
+                        <Col span={3} offset={9}>
+                            <Button type="primary" style={confirmCheckBtn}>
+                                <div>提交审核</div>
+                                <div>剩余时间：{this.state.endtime}</div>
+                            </Button>
+                        </Col>
+                    </Row>
+
+                </Affix>
             </div>
         );
     }
