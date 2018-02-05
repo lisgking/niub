@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
     Form, Button, Icon, Tooltip, Affix,
-    // Layout, Header, Content, Footer,
     Row, Col,
     Divider, Input, message, Collapse,
 } from 'antd';
@@ -21,14 +20,14 @@ const customPanelStyle = {
     overflow: 'hidden',
 };
 
-const time_zh = {
+const timeNames = {
     years: '年',
     months: '月',
     days: '日',
     hours: '时',
     minutes: '分',
     seconds: '秒',
-}
+};
 
 const confirmCheckBtn = {
     margin: '10px 0',
@@ -55,28 +54,12 @@ export default class Notice extends Component {
             maxScrollbarLength: 100,
         });
         ps.update();
-
-        this.countDown();
+        const m2 = moment().add(1, 'hour');
+        this.countDown(m2);
     }
 
-    countDown() {
-        const interval = 1000;
-        const m2 = moment().add(1, 'hour');
-        this.timer = setInterval(() => {
-            let str = '';
-            const m1 = moment();
-            const diff = moment.preciseDiff(m1, m2, true); // '1 month 2 days 3 hours 4 minutes 5 seconds'
-            let flag = false;
-            for (let key in time_zh) {
-                if (diff[key] > 0 || flag) {
-                    str += (diff[key] >= 10 ? diff[key] : '0' + diff[key]) + time_zh[key];
-                    flag = true;
-                }
-            }
-            this.setState({
-                endtime: str,
-            });
-        }, interval);
+    componentWillUnmount() {
+        clearInterval(this.timer);
     }
 
     editClickHander = () => {
@@ -102,9 +85,27 @@ export default class Notice extends Component {
         });
         message.success('公告信息保存成功');
     }
-    componentWillUnmount() {
-        clearInterval(this.timer);
+
+    countDown(m2) {
+        const interval = 1000;
+        // const m2 = moment().add(1, 'hour');
+        this.timer = setInterval(() => {
+            let str = '';
+            const m1 = moment();
+            const diff = moment.preciseDiff(m1, m2, true);
+            let flag = false;
+            for (const key in timeNames) {
+                if (diff[key] > 0 || flag) {
+                    str += (diff[key] >= 10 ? diff[key] : `0${diff[key]}`) + timeNames[key];
+                    flag = true;
+                }
+            }
+            this.setState({
+                endtime: str,
+            });
+        }, interval);
     }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {

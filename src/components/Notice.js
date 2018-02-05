@@ -31,10 +31,11 @@ export default class Notice extends Component {
     };
 
     componentDidMount() {
-        const ps = new PerfectScrollbar('#notice-content', {
+        const ps = new PerfectScrollbar('#notice_content', {
             wheelSpeed: 0.5,
             wheelPropagation: true,
-            maxScrollbarLength: '150',
+            scrollYMarginOffset: -1,
+            maxScrollbarLength: 100,
         });
         ps.update();
     }
@@ -45,7 +46,7 @@ export default class Notice extends Component {
 
     render() {
         return (
-            <div id="notice-content" className={styles.notice} dangerouslySetInnerHTML={{ __html: this.state.notice_content }} />
+            <div id="notice_content" className={styles.notice} dangerouslySetInnerHTML={{ __html: this.state.notice_content }} />
         );
     }
 }

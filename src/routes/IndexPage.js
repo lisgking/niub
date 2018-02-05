@@ -35,7 +35,4 @@ class IndexPage extends Component {
     }
 }
 
-IndexPage.propTypes = {
-};
-
 export default connect()(IndexPage);

@@ -1,9 +1,8 @@
 .notice{
     height: 100%;
+    /* min-height: 500px; */
     padding: 10px 20px;
     position: relative;
-    overflow: auto;
-    /* direction: rtl; */
 }
 
 .ps__rail-y{
